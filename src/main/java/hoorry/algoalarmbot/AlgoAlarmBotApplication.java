@@ -18,10 +18,16 @@ public class AlgoAlarmBotApplication {
         });
 
         app.command("/money", (req, ctx) -> {
-            String target = req.getPayload().getText();
+            String target = req.getPayload().getText().toUpperCase();
             AtomicReference<String> message = new AtomicReference<>();
             moneyService.feeInfoOf(target).ifPresentOrElse(
-                fee -> message.set(target + "의 벌금은 현재 " + fee + "원입니다."),
+                fee -> {
+                    if (target.equals("TOTAL")) {
+                        message.set("총액은 " + fee + "원입니다.");
+                    } else {
+                        message.set(target + "의 벌금은 " + fee + "원입니다.");
+                    }
+                },
                 () -> message.set("유효하지 않은 명령어입니다.")
             );
             return ctx.ack(message.toString());
