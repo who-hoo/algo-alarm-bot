@@ -60,6 +60,11 @@ public class RecommendService {
 	}
 
 	private void loadProblems() {
+		loadBaekjun();
+		loadProgrammers();
+	}
+
+	private void loadBaekjun() {
 		try (BufferedReader br = new BufferedReader(new FileReader(baekjun))) {
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -69,7 +74,9 @@ public class RecommendService {
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
+	}
 
+	private void loadProgrammers() {
 		try (BufferedReader br = new BufferedReader(new FileReader(programmers))) {
 			String line;
 			while ((line = br.readLine()) != null) {
