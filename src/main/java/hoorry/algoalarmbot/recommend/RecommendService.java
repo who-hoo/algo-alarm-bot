@@ -4,9 +4,8 @@ import hoorry.algoalarmbot.common.MyFileReader;
 import hoorry.algoalarmbot.common.TxtFileReader;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,39 +23,16 @@ public class RecommendService {
 	}
 
 	public List<Problem> recommend() {
-
-		Set<Integer> randomProblemIndex = new HashSet<>();
-		while (randomProblemIndex.size() != 5) {
-			int random = (int) (Math.random() * problems.size());
-			randomProblemIndex.add(random);
-		}
-
-		List<Problem> recommendedProblems = new ArrayList<>();
-
-		for (Integer problemIndex : randomProblemIndex) {
-			recommendedProblems.add(problems.get(problemIndex));
-		}
-		return recommendedProblems;
+		Collections.shuffle(problems);
+		return problems.subList(0, Math.min(problems.size(), 5));
 	}
 
 	public List<Problem> recommend(String level) {
-
-		List<Problem> filteredProblems = problems.stream()
+		Collections.shuffle(problems);
+		return problems.stream()
 			.filter(p -> p.isSameLevel(level))
-			.collect(Collectors.toList());
-
-		Set<Integer> randomProblemIndex = new HashSet<>();
-		while (randomProblemIndex.size() != 5) {
-			int random = (int) (Math.random() * filteredProblems.size());
-			randomProblemIndex.add(random);
-		}
-
-		List<Problem> recommendedProblems = new ArrayList<>();
-
-		for (Integer problemIndex : randomProblemIndex) {
-			recommendedProblems.add(filteredProblems.get(problemIndex));
-		}
-		return recommendedProblems;
+			.collect(Collectors.toList())
+			.subList(0, Math.min(problems.size(), 5));
 	}
 
 	private void loadProblems() {
