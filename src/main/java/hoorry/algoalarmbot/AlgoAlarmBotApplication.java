@@ -3,6 +3,7 @@ package hoorry.algoalarmbot;
 import com.slack.api.app_backend.slash_commands.response.SlashCommandResponse;
 import com.slack.api.bolt.App;
 import com.slack.api.bolt.jetty.SlackAppServer;
+import hoorry.algoalarmbot.common.TxtFileReader;
 import hoorry.algoalarmbot.money.MoneyService;
 import hoorry.algoalarmbot.recommend.Problem;
 import hoorry.algoalarmbot.recommend.RecommendService;
@@ -40,7 +41,7 @@ public class AlgoAlarmBotApplication {
 		app.command("/money", (req, ctx) -> {
 			String target = req.getPayload().getText().toUpperCase();
 			AtomicReference<String> message = new AtomicReference<>();
-			moneyService.feeInfoOf(target).ifPresentOrElse(
+			moneyService.feeInfoOf(target, new TxtFileReader<>()).ifPresentOrElse(
 				feeInfo -> message.set(feeInfo.translateToMessage()),
 				() -> message.set("유효하지 않은 명령어입니다.")
 			);

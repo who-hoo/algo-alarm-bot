@@ -1,9 +1,8 @@
 package hoorry.algoalarmbot.recommend;
 
-import java.io.BufferedReader;
+import hoorry.algoalarmbot.common.MyFileReader;
+import hoorry.algoalarmbot.common.TxtFileReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -60,36 +59,21 @@ public class RecommendService {
 	}
 
 	private void loadProblems() {
-		loadBaekjun();
-		loadProgrammers();
+		TxtFileReader<Problem> reader = new TxtFileReader<>();
+		loadBaekjun(reader);
+		loadProgrammers(reader);
 	}
 
-	private void loadBaekjun() {
-		try (BufferedReader br = new BufferedReader(new FileReader(baekjun))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] split = line.split(",");
-				if (split.length == 3) {
-					problems.add(new Problem("백준", split[0], split[1], split[2]));
-				}
-			}
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
+	private void loadBaekjun(MyFileReader<Problem> fileReader) {
+		List<Problem> problemsOfBaekjun = fileReader.read(baekjun, ",",
+			args -> new Problem("백준", args[0], args[1], args[2]));
+		this.problems.addAll(problemsOfBaekjun);
 	}
 
-	private void loadProgrammers() {
-		try (BufferedReader br = new BufferedReader(new FileReader(programmers))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				String[] split = line.split(",");
-				if (split.length == 3) {
-					problems.add(new Problem("프로그래머스", split[0], split[1], split[2]));
-				}
-			}
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
+	private void loadProgrammers(MyFileReader<Problem> fileReader) {
+		List<Problem> problemsOfProgrammers = fileReader.read(programmers, ",",
+			args -> new Problem("프로그래머스", args[0], args[1], args[2]));
+		this.problems.addAll(problemsOfProgrammers);
 	}
 
 }
