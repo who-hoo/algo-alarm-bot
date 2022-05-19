@@ -15,6 +15,7 @@ public class RecommendService {
 
 	private File baekjun = new File(System.getenv("BAEKJUN_PATH"));
 	private File programmers = new File(System.getenv("PROGRAMMERS_PATH"));
+	private Problem bonusProblem = new Problem("백준", "A+B", "https://www.acmicpc.net/problem/1000", "Bronze5");
 
 	private final List<Problem> problems = new ArrayList<>();
 
@@ -66,13 +67,23 @@ public class RecommendService {
 
 	private void loadBaekjun(MyFileReader<Problem> fileReader) {
 		List<Problem> problemsOfBaekjun = fileReader.read(baekjun, ",",
-			args -> new Problem("백준", args[0], args[1], args[2]));
+			args -> {
+				if (args.length != 3) {
+					return bonusProblem;
+				}
+				return new Problem("백준", args[0], args[1], args[2]);
+			});
 		this.problems.addAll(problemsOfBaekjun);
 	}
 
 	private void loadProgrammers(MyFileReader<Problem> fileReader) {
 		List<Problem> problemsOfProgrammers = fileReader.read(programmers, ",",
-			args -> new Problem("프로그래머스", args[0], args[1], args[2]));
+			args -> {
+				if (args.length != 3) {
+					return bonusProblem;
+				}
+				return new Problem("프로그래머스", args[0], args[1], args[2]);
+			});
 		this.problems.addAll(problemsOfProgrammers);
 	}
 
