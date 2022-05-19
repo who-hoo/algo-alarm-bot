@@ -69,7 +69,9 @@ public class RecommendService {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] split = line.split(",");
-				problems.add(new Problem("백준", split[0], split[1], split[2]));
+				if (split.length == 3) {
+					problems.add(new Problem("백준", split[0], split[1], split[2]));
+				}
 			}
 		} catch (IOException e) {
 			log.error(e.getMessage());
@@ -81,7 +83,9 @@ public class RecommendService {
 			String line;
 			while ((line = br.readLine()) != null) {
 				String[] split = line.split(",");
-				problems.add(new Problem("프로그래머스", split[0], split[1], split[2]));
+				if (split.length == 3) {
+					problems.add(new Problem("프로그래머스", split[0], split[1], split[2]));
+				}
 			}
 		} catch (IOException e) {
 			log.error(e.getMessage());
