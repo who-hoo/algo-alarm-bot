@@ -13,12 +13,12 @@ public class AlgoAlarmBotApplication {
 
 	private static final RecommendService recommendService = new RecommendService();
 
-    public static void main(String[] args) throws Exception {
-        App app = new App();
-        MoneyService moneyService = new MoneyService();
+	public static void main(String[] args) throws Exception {
+		App app = new App();
+		MoneyService moneyService = new MoneyService();
 
-        app.command("/recommend", (req, ctx) -> {
-	        StringBuilder sb = new StringBuilder();
+		app.command("/recommend", (req, ctx) -> {
+			StringBuilder sb = new StringBuilder();
 
 			String arg = req.getPayload().getText();
 			if (arg == null) {
@@ -29,35 +29,29 @@ public class AlgoAlarmBotApplication {
 				return ctx.ack(sb.toString());
 			}
 
-	        List<Problem> recommend = recommendService.recommend(arg);
+			List<Problem> recommend = recommendService.recommend(arg);
 
-	        for (Problem problem : recommend) {
-		        sb.append(problem.toString()).append('\n');
-	        }
-	        return ctx.ack(sb.toString());
-        });
+			for (Problem problem : recommend) {
+				sb.append(problem.toString()).append('\n');
+			}
+			return ctx.ack(sb.toString());
+		});
 
-        app.command("/money", (req, ctx) -> {
-            String target = req.getPayload().getText().toUpperCase();
-            AtomicReference<String> message = new AtomicReference<>();
-            moneyService.feeInfoOf(target).ifPresentOrElse(
-                fee -> {
-                    if (target.equals("TOTAL")) {
-                        message.set("총액은 " + fee + "원입니다.");
-                    } else {
-                        message.set(target + "의 벌금은 " + fee + "원입니다.");
-                    }
-                },
-                () -> message.set("유효하지 않은 명령어입니다.")
-            );
-	        return ctx.ack(SlashCommandResponse.builder()
-		        .text(message.toString())
-		        .responseType("in_channel")
-		        .build());
-        });
+		app.command("/money", (req, ctx) -> {
+			String target = req.getPayload().getText().toUpperCase();
+			AtomicReference<String> message = new AtomicReference<>();
+			moneyService.feeInfoOf(target).ifPresentOrElse(
+				feeInfo -> message.set(feeInfo.translateToMessage()),
+				() -> message.set("유효하지 않은 명령어입니다.")
+			);
+			return ctx.ack(SlashCommandResponse.builder()
+				.text(message.toString())
+				.responseType("in_channel")
+				.build());
+		});
 
-        SlackAppServer server = new SlackAppServer(app);
-        server.start();
-    }
+		SlackAppServer server = new SlackAppServer(app);
+		server.start();
+	}
 
 }
